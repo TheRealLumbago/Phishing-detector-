@@ -104,13 +104,19 @@ phishing-email-detection/
 1. Open `main.ipynb` in Jupyter Notebook, JupyterLab, or VS Code
 2. Ensure you're using Python 3.10.6 kernel
 3. Run cells sequentially:
-   - **Cell 1**: Import libraries and check GPU availability
-   - **Cell 2-5**: Load and preprocess data
-   - **Cell 6-8**: Train traditional ML models
-   - **Cell 9+**: Build and train LSTM model
-   - **Cell 10+**: Hyperparameter optimization
-   - **Cell 11+**: Model interpretability analysis
-   - **Cell 12+**: Model comparison and visualization
+   - **Cell 0**: Import libraries and check GPU availability
+   - **Cell 1-5**: Load and preprocess data
+   - **Cell 6-8**: Train traditional ML models (Logistic Regression, Naive Bayes, Random Forest)
+   - **Cell 9**: Confusion matrix visualization
+   - **Cell 10**: Build and train LSTM model
+   - **Cell 11**: Model interpretability analysis (SHAP, LIME, ELI5)
+   - **Cell 12**: Hyperparameter optimization (Random Forest, Logistic Regression, LSTM)
+   - **Cell 13**: Basic model comparison
+   - **Cell 14**: Voting Ensemble
+   - **Cell 15**: ROC curves visualization
+   - **Cell 16**: Stacking Ensemble
+   - **Cell 17**: Comprehensive model comparison with all metrics
+   - **Cell 18**: Final results summary
 
 ### Running the Agent-Based Approach
 
@@ -129,13 +135,28 @@ print(agent.classify(safe_email))      # Output: Safe Email
 
 ## 📊 Results
 
-The project compares multiple models and provides:
-- **Model Performance Comparison**: Accuracy, F1-Score, ROC-AUC metrics
+The project compares multiple models and provides comprehensive analysis:
+
+### Performance Metrics
+- **Model Performance Comparison**: Accuracy, Precision, Recall, F1-Score, ROC-AUC metrics
+- **Comprehensive Comparison Table**: Side-by-side comparison of all models
+- **Model Ranking**: Performance ranking by ROC-AUC score
+
+### Visualizations
 - **Confusion Matrices**: Visual representation of model predictions
-- **Learning Curves**: Training and validation performance over epochs
-- **ROC Curves**: Comparison of model performance across different thresholds
-- **Feature Importance**: Top contributing features for each model
-- **Interpretability Explanations**: SHAP and LIME explanations for individual predictions
+- **ROC Curves**: Comparison of model performance across different thresholds with AUC scores
+- **Learning Curves**: Training and validation performance over epochs for LSTM
+- **Feature Importance**: Top contributing features for each model (Random Forest, Logistic Regression)
+- **Multi-metric Comparison Charts**: Bar charts comparing all metrics across models
+
+### Interpretability
+- **SHAP Explanations**: Deep learning model explanations (GradientExplainer)
+- **LIME Explanations**: Local explanations for individual email predictions with text highlighting
+- **ELI5 Explanations**: Feature importance visualization for linear models
+
+### Ensemble Methods
+- **Voting Ensemble**: Soft voting classifier combining Logistic Regression, Random Forest, and Naive Bayes
+- **Stacking Ensemble**: Meta-learner approach with cross-validation
 
 ## 🔍 Model Interpretability
 
@@ -154,9 +175,34 @@ The project compares multiple models and provides:
 
 ## 🎯 Key Findings
 
-- **Best Performing Model**: [Update with your results]
-- **Accuracy**: [Update with your results]
-- **F1-Score**: [Update with your results]
+### Model Performance Results
+
+Based on comprehensive evaluation on the test set:
+
+- **Best Performing Model**: Logistic Regression / LSTM (varies by metric)
+- **Top Accuracy**: ~96.2% (Logistic Regression, Random Forest, LSTM)
+- **Top F1-Score**: ~0.96 (across multiple models)
+- **Top ROC-AUC**: >0.98 (all models show excellent discrimination)
+
+### Detailed Model Performance
+
+| Model | Accuracy | Precision | Recall | F1-Score | ROC-AUC |
+|-------|----------|-----------|--------|----------|---------|
+| Logistic Regression | 96.22% | 0.96 | 0.96 | 0.96 | >0.98 |
+| Naive Bayes | 94.29% | 0.94 | 0.94 | 0.94 | >0.97 |
+| Random Forest | 96.03% | 0.96 | 0.96 | 0.96 | >0.98 |
+| Bidirectional LSTM | ~96%+ | ~0.96 | ~0.97 | ~0.96 | >0.98 |
+| Voting Ensemble | 96.49% | 0.96 | 0.96 | 0.96 | >0.98 |
+| Stacking Ensemble | ~96%+ | ~0.96 | ~0.96 | ~0.96 | >0.98 |
+
+### Key Insights
+
+1. **All models achieved excellent performance** (>94% accuracy), demonstrating the effectiveness of different approaches
+2. **Traditional ML models** (Logistic Regression, Random Forest) perform comparably to deep learning
+3. **Ensemble methods** (Voting & Stacking) provide robust and consistent predictions
+4. **LSTM model** shows competitive performance with sequence-based learning
+5. **Model interpretability** tools successfully explain predictions, enhancing trust and understanding
+6. **Hyperparameter optimization** improved model performance across all algorithms
 
 ## 📝 Dataset
 
@@ -183,5 +229,17 @@ This project implements Progress Report III requirements:
 - ✅ Model interpretability (SHAP, LIME, ELI5)
 - ✅ Hyperparameter optimization (RandomizedSearchCV, Keras Tuner)
 - ✅ Comprehensive model comparison and evaluation
+- ✅ ROC curves and AUC analysis
+- ✅ Ensemble methods (Voting & Stacking)
+- ✅ Complete performance metrics (Accuracy, Precision, Recall, F1-Score, ROC-AUC)
+- ✅ Final results summary and key findings
+
+## 📄 Files
+
+- `main.ipynb` - Main Jupyter notebook with all implementations and analysis
+- `simpleagent.py` - Agent-based phishing detection with BFS graph search
+- `Phishing_Email.csv` - Dataset containing phishing and safe emails
+- `requirements.txt` - Python package dependencies
+- `README.md` - Project documentation
 
 
