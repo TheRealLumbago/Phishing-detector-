@@ -30,11 +30,14 @@ keras_tuner/
 *.h5
 *.hdf5
 
-# Model checkpoints
+# Model checkpoints and saved models
 best_lstm_model.h5
 checkpoint.weights.h5
 *.ckpt
 *.pth
+*.pkl
+*.keras
+*.h5
 
 # Environment
 venv/
