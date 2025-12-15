@@ -13,4 +13,6 @@ keras-tuner>=1.1.0
 scipy>=1.9.0
 jupyter>=1.0.0
 ipython>=8.0.0
+flask>=2.3.0
+flask-cors>=4.0.0
 

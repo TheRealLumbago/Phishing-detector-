@@ -44,6 +44,8 @@ This project implements and compares various machine learning and deep learning 
 - **Python 3.10.6**
 - **Machine Learning**: scikit-learn
 - **Deep Learning**: TensorFlow 2.20.0, Keras
+- **Web Framework**: Flask, Flask-CORS
+- **Frontend**: HTML5, CSS3, JavaScript (Vanilla)
 - **Interpretability**: SHAP, LIME, ELI5
 - **Optimization**: Keras Tuner, scikit-learn RandomizedSearchCV
 - **Data Processing**: pandas, numpy
@@ -89,15 +91,55 @@ print(tf.config.list_physical_devices('GPU'))
 phishing-email-detection/
 │
 ├── main.ipynb                 # Main notebook with all ML/DL models and analysis
+├── app.py                     # Flask backend API for web frontend
+├── index.html                 # Web frontend interface
 ├── simpleagent.py             # Agent-based phishing detection implementation
 ├── Phishing_Email.csv         # Dataset (phishing and safe emails)
+├── requirements.txt           # Python package dependencies
 ├── README.md                  # Project documentation
+│
+├── lstm_model.keras          # Saved LSTM model
+├── lstm_tokenizer.pkl        # Saved tokenizer for LSTM
+├── lr_optimized.pkl          # Optimized Logistic Regression model
+├── rf_optimized.pkl          # Optimized Random Forest model
 │
 └── untitled_project/          # Keras Tuner results (can be regenerated)
     └── trial_*/               # Hyperparameter tuning trial results
 ```
 
 ## 🚀 Usage
+
+### Running the Web Frontend
+
+1. **Install Flask dependencies** (if not already installed):
+   ```bash
+   pip install flask flask-cors
+   ```
+   Or install all requirements:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. **Start the Flask backend server**:
+   ```bash
+   python app.py
+   ```
+   The server will start on `http://localhost:5000`
+
+3. **Open the frontend**:
+   - Open `index.html` in your web browser
+   - Or use a local server (recommended):
+     ```bash
+     # Using Python's built-in server
+     python -m http.server 8000
+     # Then open http://localhost:8000/index.html
+     ```
+
+4. **Use the interface**:
+   - Paste email text into the text area
+   - Click "Analyze Email" to get predictions
+   - View results with probability scores and confidence levels
+   - Try sample emails to test the system
 
 ### Running the Main Notebook
 
@@ -237,9 +279,24 @@ This project implements Progress Report III requirements:
 ## 📄 Files
 
 - `main.ipynb` - Main Jupyter notebook with all implementations and analysis
+- `app.py` - Flask backend API server for web frontend
+- `index.html` - Modern web frontend interface for email analysis
 - `simpleagent.py` - Agent-based phishing detection with BFS graph search
 - `Phishing_Email.csv` - Dataset containing phishing and safe emails
 - `requirements.txt` - Python package dependencies
 - `README.md` - Project documentation
+
+## 🌐 Web Frontend Features
+
+- **Modern UI**: Beautiful gradient design with smooth animations
+- **Real-time Analysis**: Instant email classification results
+- **Detailed Results**: 
+  - Prediction (Phishing/Safe)
+  - Confidence level (Very High, High, Medium, Low)
+  - Probability scores for both classes
+  - Visual progress bar showing confidence
+- **Sample Emails**: Quick test with pre-loaded phishing and safe examples
+- **Responsive Design**: Works on desktop and mobile devices
+- **Error Handling**: Clear error messages for API connection issues
 
 

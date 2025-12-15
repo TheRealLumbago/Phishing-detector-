@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Email Detector</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            width: 100%;
+            padding: 40px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .predict-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .predict-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .predict-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .clear-btn {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .clear-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .result-section {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 15px;
+            display: none;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-section.show {
+            display: block;
+        }
+
+        .result-section.safe {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+
+        .result-section.phishing {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+            color: white;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .result-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon {
+            font-size: 1.5em;
+        }
+
+        .result-details {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: 600;
+        }
+
+        .detail-value {
+            font-weight: 700;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            transition: width 0.5s ease-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid rgba(102, 126, 234, 0.1);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #ff6b6b;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .sample-emails {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .sample-emails h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .sample-btn {
+            display: inline-block;
+            padding: 8px 15px;
+            margin: 5px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .sample-btn:hover {
+            background: #5568d3;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛡️ Phishing Email Detector</h1>
+        <p class="subtitle">AI-Powered Email Security Analysis</p>
+
+        <div class="input-section">
+            <label for="emailText">Enter Email Text:</label>
+            <textarea 
+                id="emailText" 
+                placeholder="Paste the email content here to check if it's a phishing attempt..."
+            ></textarea>
+        </div>
+
+        <div class="button-group">
+            <button class="predict-btn" onclick="predictEmail()">🔍 Analyze Email</button>
+            <button class="clear-btn" onclick="clearInput()">🗑️ Clear</button>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Analyzing email...</p>
+        </div>
+
+        <div class="error" id="error"></div>
+
+        <div class="result-section" id="result">
+            <div class="result-header">
+                <div class="result-title">
+                    <span class="icon" id="resultIcon">✓</span>
+                    <span id="resultTitle">Safe Email</span>
+                </div>
+            </div>
+            <div class="result-details">
+                <div class="detail-row">
+                    <span class="detail-label">Prediction:</span>
+                    <span class="detail-value" id="prediction">Safe</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Confidence Level:</span>
+                    <span class="detail-value" id="confidenceLevel">High</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Phishing Probability:</span>
+                    <span class="detail-value" id="phishingProb">0%</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Safe Probability:</span>
+                    <span class="detail-value" id="safeProb">100%</span>
+                </div>
+                <div style="margin-top: 15px;">
+                    <div class="detail-label">Confidence Score:</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%">0%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sample-emails">
+            <h3>📧 Try Sample Emails:</h3>
+            <button class="sample-btn" onclick="loadSample('phishing')">Phishing Example</button>
+            <button class="sample-btn" onclick="loadSample('safe')">Safe Example</button>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/predict';
+
+        async function predictEmail() {
+            const emailText = document.getElementById('emailText').value.trim();
+            
+            if (!emailText) {
+                showError('Please enter email text to analyze.');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loading').classList.add('show');
+            document.getElementById('result').classList.remove('show');
+            document.getElementById('error').classList.remove('show');
+            document.querySelector('.predict-btn').disabled = true;
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email_text: emailText })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to analyze email');
+                }
+
+                displayResult(data);
+            } catch (error) {
+                showError('Error: ' + error.message + '. Make sure the Flask server is running on http://localhost:5000');
+            } finally {
+                document.getElementById('loading').classList.remove('show');
+                document.querySelector('.predict-btn').disabled = false;
+            }
+        }
+
+        function displayResult(data) {
+            const resultSection = document.getElementById('result');
+            const isPhishing = data.is_phishing;
+            
+            // Update result section class
+            resultSection.className = 'result-section show ' + (isPhishing ? 'phishing' : 'safe');
+            
+            // Update icon and title
+            document.getElementById('resultIcon').textContent = isPhishing ? '⚠️' : '✓';
+            document.getElementById('resultTitle').textContent = data.prediction + ' Email';
+            
+            // Update details
+            document.getElementById('prediction').textContent = data.prediction;
+            document.getElementById('confidenceLevel').textContent = data.confidence_level;
+            document.getElementById('phishingProb').textContent = (data.phishing_probability * 100).toFixed(2) + '%';
+            document.getElementById('safeProb').textContent = (data.safe_probability * 100).toFixed(2) + '%';
+            
+            // Update progress bar
+            const confidencePercent = (data.confidence * 100).toFixed(1);
+            const progressFill = document.getElementById('progressFill');
+            progressFill.style.width = confidencePercent + '%';
+            progressFill.textContent = confidencePercent + '%';
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+        }
+
+        function clearInput() {
+            document.getElementById('emailText').value = '';
+            document.getElementById('result').classList.remove('show');
+            document.getElementById('error').classList.remove('show');
+        }
+
+        function loadSample(type) {
+            const samples = {
+                phishing: `URGENT: Your Account Will Be Suspended!
+
+Dear Customer,
+
+We have detected unusual activity on your account. To prevent suspension, please verify your account immediately by clicking the link below:
+
+http://verify-account-now.com/secure/login
+
+This is your last warning. Failure to verify within 24 hours will result in permanent account closure.
+
+Best regards,
+Security Team`,
+
+                safe: `Meeting Reminder - Project Discussion
+
+Hi Team,
+
+This is a reminder about our scheduled meeting tomorrow at 2:00 PM in Conference Room B.
+
+Agenda:
+- Review project progress
+- Discuss next steps
+- Q&A session
+
+Please come prepared with your updates.
+
+Looking forward to seeing everyone there.
+
+Best regards,
+John Smith
+Project Manager`
+            };
+
+            document.getElementById('emailText').value = samples[type];
+        }
+
+        // Allow Enter key to submit (Ctrl+Enter)
+        document.getElementById('emailText').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                predictEmail();
+            }
+        });
+    </script>
+</body>
+</html>
+
